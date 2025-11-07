@@ -25,8 +25,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Login sebagai ${email.text} (dummy)')),
+      SnackBar(content: Text('Login berhasil untuk ${email.text} (dummy)')),
     );
   }
 
@@ -34,9 +35,24 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Login'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Login'),
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(18),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Text(
+              'NIM: 1123150039',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            ),
+          ),
+        ),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
             Text('Welcome back 👋', style: t.textTheme.headlineSmall),
@@ -62,10 +78,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () => setState(() => obscured = !obscured),
                 ),
               ),
-              onSubmitted: (_) => _submit(),
             ),
             const SizedBox(height: 20),
-            FilledButton(onPressed: _submit, child: const Text('Login')),
+            // Tombol Login
+            FilledButton(
+              onPressed: _submit,
+              child: const Text('Login'),
+            ),
           ],
         ),
       ),
