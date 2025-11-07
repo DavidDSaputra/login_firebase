@@ -10,8 +10,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final email = TextEditingController();
   final password = TextEditingController();
 
+  bool obscured = true;
+
   @override
-  void dispose() { email.dispose(); password.dispose(); super.dispose(); }
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +35,22 @@ class _LoginScreenState extends State<LoginScreen> {
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
-                labelText: 'Email', prefixIcon: Icon(Icons.email_outlined)),
+                labelText: 'Email',
+                prefixIcon: Icon(Icons.email_outlined),
+              ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: password,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password', prefixIcon: Icon(Icons.lock_outline)),
+              obscureText: obscured,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                prefixIcon: const Icon(Icons.lock_outline),
+                suffixIcon: IconButton(
+                  icon: Icon(obscured ? Icons.visibility : Icons.visibility_off),
+                  onPressed: () => setState(() => obscured = !obscured),
+                ),
+              ),
             ),
           ],
         ),
@@ -44,4 +58,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
