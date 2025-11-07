@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'src/app.dart';
 
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class UtsApp extends StatelessWidget {
+  const UtsApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,7 +10,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
       ),
-      home: const Scaffold(body: Center(child: Text('Init'))),
+      home: const Scaffold(body: Center(child: Text('Scaffolded'))),
     );
   }
 }
