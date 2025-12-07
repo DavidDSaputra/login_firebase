@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../strings.dart';
+import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,6 +12,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final email = TextEditingController();
   final password = TextEditingController();
   bool obscured = true;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -19,16 +21,46 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _submit() {
+  void _submit() async {
+
     if (email.text.isEmpty || password.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text(S.emptyError)),
       );
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Login sebagai ${email.text} (dummy)')),
-    );
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final user = await AuthService().login(
+        email: email.text,
+        password: password.text,
+      );
+
+   
+      if (mounted) {
+      
+         Navigator.pushReplacementNamed(context, '/home');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -60,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Text(S.welcome, style: t.textTheme.headlineSmall),
                 const SizedBox(height: 16),
-                // Field Email
+
                 TextField(
                   controller: email,
                   keyboardType: TextInputType.emailAddress,
@@ -71,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                // Field Password
+   
                 TextField(
                   controller: password,
                   obscureText: obscured,
@@ -88,22 +120,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   onSubmitted: (_) => _submit(),
                 ),
                 const SizedBox(height: 20),
-                // Tombol Login Merah
-                FilledButton(
-                  onPressed: _submit,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.red, 
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    S.loginButton,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
+           
+                isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : FilledButton(
+                        onPressed: _submit,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          S.loginButton,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
               ],
             ),
           ),
